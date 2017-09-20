@@ -13,13 +13,14 @@ CFLAGS += -DUSE_LWIP_SOCKET_FOR_AZURE_IOT
 
 COMPONENT_ADD_INCLUDEDIRS :=  \
 pal  \
+pal/inc  \
 sdk/c-utility/inc  \
 sdk/c-utility/inc/azure_c_shared_utility \
 sdk/c-utility/pal/inc \
 sdk/iothub_client/inc \
 sdk/umqtt/inc  \
 sdk/umqtt/inc/azure_umqtt_c 	\
-sdk/parson
+sdk/deps/parson
 
 COMPONENT_OBJS =  \
 sdk/c-utility/src/xlogging.o	\
@@ -57,6 +58,7 @@ sdk/iothub_client/src/iothub_client_ll.o	\
 sdk/iothub_client/src/iothub_client_ll_uploadtoblob.o	\
 sdk/iothub_client/src/iothub_client_authorization.o	\
 sdk/iothub_client/src/iothub_client_retry_control.o	\
+sdk/iothub_client/src/iothub_client_diagnostic.o	\
 sdk/iothub_client/src/iothub_message.o	\
 sdk/iothub_client/src/iothubtransport.o	\
 sdk/iothub_client/src/iothubtransportmqtt.o	\
@@ -76,17 +78,17 @@ sdk/c-utility/src/singlylinkedlist.o	\
 \
 sdk/c-utility/pal/dns_async.o	\
 sdk/c-utility/pal/socket_async.o	\
-sdk/c-utility/pal/free_rtos/threadapi.o	\
-sdk/c-utility/pal/free_rtos/tickcounter.o	\
+sdk/c-utility/pal/freertos/threadapi.o	\
+sdk/c-utility/pal/freertos/tickcounter.o	\
 sdk/c-utility/pal/lwip/sntp_lwip.o	\
 \
-pal/platform_openssl_compact.o	\
-pal/tlsio_openssl_compact.o	
+pal/src/platform_openssl_compact.o	\
+pal/src/tlsio_openssl_compact.o	
 
 COMPONENT_SRCDIRS :=  \
-pal  \
+pal/src  \
 sdk/c-utility/pal  \
-sdk/c-utility/pal/free_rtos  \
+sdk/c-utility/pal/freertos  \
 sdk/c-utility/pal/lwip  \
 sdk/c-utility/src \
 sdk/c-utility/adapters  \
