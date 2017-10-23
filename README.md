@@ -31,7 +31,7 @@ Change to the ESP32 SDK's `components` directory:<br/>
 `cd $IDF_PATH/components`<br/>
 
 Clone this repository into the `components` directory as `azure-iot`:<br/>
-`git clone --recursive  https://github.com/Azure/azure-iot-pal-esp32.git azure-iot azure-iot`
+`git clone --recursive  https://github.com/Azure/azure-iot-pal-esp32.git azure-iot`
 
 ## Step 5 - Assemble the sample project
 
