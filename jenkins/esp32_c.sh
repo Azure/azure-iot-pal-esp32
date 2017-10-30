@@ -5,7 +5,7 @@ export PATH=$PATH:$ESP32_TOOLS/xtensa-esp32-elf/bin
 # Verify that the ESP32 SDK is at a tested commit
 pushd $IDF_PATH
 idf_commit=$(git rev-parse HEAD)
-tested_idf_commit=53893297299e207029679dc99b7fb33151bdd415
+tested_idf_commit=2c95a77cf93781f296883d5dbafcdc18e4389656
 popd
 if [ $idf_commit = $tested_idf_commit ]
     then echo "ESP32 SDK commit is okay"
