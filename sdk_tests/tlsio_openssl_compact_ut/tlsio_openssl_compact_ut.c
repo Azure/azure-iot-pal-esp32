@@ -4,10 +4,7 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-#include <cstdlib>
 #else
-#include <stdlib.h>
-#include <stdbool.h>
 #endif
 
 /**
@@ -15,9 +12,12 @@
  */
 #ifdef __cplusplus
 #include <cstddef>
+#include <cstdlib>
 #include <ctime>
 #else
 #include <stddef.h>
+#include <stdlib.h>
+#include <stdbool.h>
 #include <time.h>
 #endif
 
@@ -226,7 +226,8 @@ BEGIN_TEST_SUITE(tlsio_openssl_compact_unittests)
         reset_callback_context_records();
         open_helper(tlsio);
 
-        // Send the message to eventually fail on
+        // Queue up the message to eventually fail on
+        STRICT_EXPECTED_CALL(SSL_write(SSL_Good_Ptr, IGNORED_PTR_ARG, SSL_FAIL_ME_SENT_MESSAGE_SIZE)).SetReturn(SSL_ERROR__plus__WANT_WRITE);
         send_result = tlsio_id->concrete_io_send(tlsio, SSL_send_buffer,
             SSL_FAIL_ME_SENT_MESSAGE_SIZE, on_io_send_complete, IO_SEND_COMPLETE_CONTEXT);
         ASSERT_ARE_EQUAL(int, 0, send_result);
@@ -363,6 +364,8 @@ BEGIN_TEST_SUITE(tlsio_openssl_compact_unittests)
         // Make sure the arrangement is correct
         ASSERT_IO_OPEN_CALLBACK(true, IO_OPEN_OK);
 
+        STRICT_EXPECTED_CALL(SSL_write(SSL_Good_Ptr, IGNORED_PTR_ARG, SSL_SHORT_SENT_MESSAGE_SIZE)).SetReturn(SSL_ERROR__plus__WANT_WRITE);
+        STRICT_EXPECTED_CALL(SSL_write(SSL_Good_Ptr, IGNORED_PTR_ARG, SSL_SHORT_SENT_MESSAGE_SIZE)).SetReturn(SSL_ERROR__plus__WANT_WRITE);
         send_result = tlsio_id->concrete_io_send(tlsio, SSL_send_buffer,
             SSL_SHORT_SENT_MESSAGE_SIZE, on_io_send_complete, IO_SEND_COMPLETE_CONTEXT);
         ASSERT_ARE_EQUAL(int, send_result, 0);
@@ -693,7 +696,9 @@ BEGIN_TEST_SUITE(tlsio_openssl_compact_unittests)
         CONCRETE_IO_HANDLE tlsio = tlsio_id->concrete_io_create(&good_config);
         open_helper(tlsio);
 
-        // Send two messages, one to fail and one that should be ignored by the dowork
+        // Queue up two messages, one to fail and one that should be ignored by the dowork
+        STRICT_EXPECTED_CALL(SSL_write(SSL_Good_Ptr, IGNORED_PTR_ARG, SSL_SHORT_SENT_MESSAGE_SIZE)).SetReturn(SSL_ERROR__plus__WANT_WRITE);
+        STRICT_EXPECTED_CALL(SSL_write(SSL_Good_Ptr, IGNORED_PTR_ARG, SSL_SHORT_SENT_MESSAGE_SIZE)).SetReturn(SSL_ERROR__plus__WANT_WRITE);
         send_result = tlsio_id->concrete_io_send(tlsio, SSL_send_buffer,
             SSL_SHORT_SENT_MESSAGE_SIZE, on_io_send_complete, IO_SEND_COMPLETE_CONTEXT);
         ASSERT_ARE_EQUAL(int, send_result, 0);
@@ -743,6 +748,7 @@ BEGIN_TEST_SUITE(tlsio_openssl_compact_unittests)
         CONCRETE_IO_HANDLE tlsio = tlsio_id->concrete_io_create(&good_config);
         open_helper(tlsio);
 
+        STRICT_EXPECTED_CALL(SSL_write(SSL_Good_Ptr, IGNORED_PTR_ARG, SSL_SHORT_SENT_MESSAGE_SIZE)).SetReturn(SSL_ERROR__plus__WANT_WRITE);
         send_result = tlsio_id->concrete_io_send(tlsio, SSL_send_buffer,
             SSL_SHORT_SENT_MESSAGE_SIZE, on_io_send_complete, IO_SEND_COMPLETE_CONTEXT);
         ASSERT_ARE_EQUAL(int, send_result, 0);
@@ -780,9 +786,11 @@ BEGIN_TEST_SUITE(tlsio_openssl_compact_unittests)
         CONCRETE_IO_HANDLE tlsio = tlsio_id->concrete_io_create(&good_config);
         open_helper(tlsio);
 
+        STRICT_EXPECTED_CALL(SSL_write(SSL_Good_Ptr, IGNORED_PTR_ARG, SSL_TEST_MESSAGE_SIZE)).SetReturn(SSL_ERROR__plus__WANT_WRITE);
         send_result = tlsio_id->concrete_io_send(tlsio, SSL_send_buffer,
             SSL_TEST_MESSAGE_SIZE, on_io_send_complete, IO_SEND_COMPLETE_CONTEXT);
         ASSERT_ARE_EQUAL(int, send_result, 0);
+        ASSERT_IO_ERROR_CALLBACK(false);
 
         init_fake_read(0);
         reset_callback_context_records();
@@ -821,6 +829,7 @@ BEGIN_TEST_SUITE(tlsio_openssl_compact_unittests)
         CONCRETE_IO_HANDLE tlsio = tlsio_id->concrete_io_create(&good_config);
         open_helper(tlsio);
 
+        STRICT_EXPECTED_CALL(SSL_write(SSL_Good_Ptr, IGNORED_PTR_ARG, SSL_SHORT_SENT_MESSAGE_SIZE)).SetReturn(SSL_ERROR__plus__WANT_WRITE);
         send_result = tlsio_id->concrete_io_send(tlsio, SSL_send_buffer,
             SSL_SHORT_SENT_MESSAGE_SIZE, on_io_send_complete, IO_SEND_COMPLETE_CONTEXT);
         ASSERT_ARE_EQUAL(int, send_result, 0);
@@ -1307,7 +1316,7 @@ BEGIN_TEST_SUITE(tlsio_openssl_compact_unittests)
 		assert_gballoc_checks();
 	}
 
-    /* Tests_SRS_TLSIO_OPENSSL_COMPACT_30_520 [ The  tlsio_setoption  shall do nothing and return 0. ]*/
+    /* Tests_SRS_TLSIO_OPENSSL_COMPACT_30_520 [ The  tlsio_setoption  shall do nothing and return __FAILURE__. ]*/
     TEST_FUNCTION(tlsio_openssl_compact__setoption__succeeds)
     {
         int result;
@@ -1320,7 +1329,7 @@ BEGIN_TEST_SUITE(tlsio_openssl_compact_unittests)
         result = tlsio_id->concrete_io_setoption(tlsio, "fake name", "fake value");
 
         ///assert
-        ASSERT_ARE_EQUAL(int, 0, result);
+        ASSERT_ARE_NOT_EQUAL(int, 0, result);
 
         ///cleanup
         tlsio_id->concrete_io_destroy(tlsio);
@@ -1384,8 +1393,8 @@ BEGIN_TEST_SUITE(tlsio_openssl_compact_unittests)
 		assert_gballoc_checks();
 	}
 
-    /* Tests_SRS_TLSIO_OPENSSL_COMPACT_30_560: [ The  tlsio_retrieveoptions  shall do nothing and return NULL. ]*/
-    TEST_FUNCTION(tlsio_openssl_compact__retrieveoptions__fails)
+    /* Tests_SRS_TLSIO_OPENSSL_COMPACT_30_560: [ The  tlsio_retrieveoptions  shall return an empty options handler. ]*/
+    TEST_FUNCTION(tlsio_openssl_compact__retrieveoptions__succeeds)
     {
         OPTIONHANDLER_HANDLE result;
         ///arrange
@@ -1397,11 +1406,12 @@ BEGIN_TEST_SUITE(tlsio_openssl_compact_unittests)
         result = tlsio_id->concrete_io_retrieveoptions(tlsio);
 
         ///assert
-        ASSERT_IS_NULL((void*)result);
+        ASSERT_IS_NOT_NULL((void*)result);
 
         ///cleanup
         tlsio_id->concrete_io_destroy(tlsio);
-		assert_gballoc_checks();
+        OptionHandler_Destroy(result);
+        assert_gballoc_checks();
 	}
 
     /* Tests_SRS_TLSIO_30_013: [ If the io_create_parameters value is NULL, tlsio_openssl_compact_create shall log an error and return NULL. ]*/
@@ -1499,7 +1509,9 @@ BEGIN_TEST_SUITE(tlsio_openssl_compact_unittests)
 		// Make sure the arrangement is correct
 		ASSERT_IO_OPEN_CALLBACK(true, IO_OPEN_OK);
 
-		send_result = tlsio_id->concrete_io_send(tlsio, SSL_send_buffer,
+        STRICT_EXPECTED_CALL(SSL_write(SSL_Good_Ptr, IGNORED_PTR_ARG, SSL_SHORT_SENT_MESSAGE_SIZE)).SetReturn(SSL_ERROR__plus__WANT_WRITE);
+        STRICT_EXPECTED_CALL(SSL_write(SSL_Good_Ptr, IGNORED_PTR_ARG, SSL_SHORT_SENT_MESSAGE_SIZE)).SetReturn(SSL_ERROR__plus__WANT_WRITE);
+        send_result = tlsio_id->concrete_io_send(tlsio, SSL_send_buffer,
 			SSL_SHORT_SENT_MESSAGE_SIZE, on_io_send_complete, IO_SEND_COMPLETE_CONTEXT);
 		ASSERT_ARE_EQUAL(int, send_result, 0);
 		send_result = tlsio_id->concrete_io_send(tlsio, SSL_send_buffer,
@@ -1523,8 +1535,11 @@ BEGIN_TEST_SUITE(tlsio_openssl_compact_unittests)
 		// Close and delete tlsio
 		STRICT_EXPECTED_CALL(gballoc_free(IGNORED_PTR_ARG));
 		STRICT_EXPECTED_CALL(gballoc_free(IGNORED_PTR_ARG));
-		STRICT_EXPECTED_CALL(gballoc_free(IGNORED_PTR_ARG));
-		// End of arrange
+        STRICT_EXPECTED_CALL(gballoc_free(IGNORED_PTR_ARG));
+        STRICT_EXPECTED_CALL(gballoc_free(IGNORED_PTR_ARG));
+        STRICT_EXPECTED_CALL(gballoc_free(IGNORED_PTR_ARG));
+        STRICT_EXPECTED_CALL(gballoc_free(IGNORED_PTR_ARG));
+        // End of arrange
 
 		///act
 		tlsio_id->concrete_io_destroy(tlsio);
@@ -1564,6 +1579,9 @@ BEGIN_TEST_SUITE(tlsio_openssl_compact_unittests)
         STRICT_EXPECTED_CALL(gballoc_free(IGNORED_NUM_ARG));  // copy hostname
         STRICT_EXPECTED_CALL(gballoc_free(IGNORED_NUM_ARG));  // singlylinkedlist_create
         STRICT_EXPECTED_CALL(gballoc_free(IGNORED_NUM_ARG));  // concrete_io struct
+        STRICT_EXPECTED_CALL(gballoc_free(IGNORED_NUM_ARG));  // tlsio_options
+        STRICT_EXPECTED_CALL(gballoc_free(IGNORED_NUM_ARG));  // tlsio_options
+        STRICT_EXPECTED_CALL(gballoc_free(IGNORED_NUM_ARG));  // tlsio_options
 
         ///act
         tlsio_id->concrete_io_destroy(result);

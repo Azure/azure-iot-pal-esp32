@@ -24,11 +24,11 @@ additionally implements the additional requirements below.
 
 ###   tlsio_setoption
 
-**SRS_TLSIO_OPENSSL_COMPACT_30_520 [** The `tlsio_setoption` shall do nothing and return 0. **]**
+**SRS_TLSIO_OPENSSL_COMPACT_30_520 [** The `tlsio_setoption` shall do nothing and return __FAILURE__. **]**
 
 
 ###   tlsio_retrieveoptions
 
-**SRS_TLSIO_OPENSSL_COMPACT_30_560: [** The `tlsio_retrieveoptions` shall do nothing and return NULL. **]**
+**SRS_TLSIO_OPENSSL_COMPACT_30_560: [** The `tlsio_retrieveoptions` shall return an empty options handler. **]**
 
 

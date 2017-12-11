@@ -5,7 +5,7 @@ export PATH=$PATH:$ESP32_TOOLS/xtensa-esp32-elf/bin
 # Verify that the ESP32 SDK is at a tested commit
 pushd $IDF_PATH
 idf_commit=$(git rev-parse HEAD)
-tested_idf_commit=2c95a77cf93781f296883d5dbafcdc18e4389656
+tested_idf_commit=a7a861962daacec17bdb0f34fd59f16651b50b0f
 popd
 if [ $idf_commit = $tested_idf_commit ]
     then echo "ESP32 SDK commit is okay"
@@ -26,18 +26,20 @@ cp $sample_dir/iothub_client_sample_mqtt.c  $proj_dir
 cp $sample_dir/iothub_client_sample_mqtt.h  $proj_dir
 
 make defconfig
-if [ $? = 0 ]
+result=$?
+if [ $result = 0 ]
     then echo "config generated okay"
 else 
     echo "!!!FAILED!!! config generation failed"
-    exit $?
+    exit $result
 fi
 
 make
-if [ $? = 0 ]
+result=$?
+if [ $result = 0 ]
     then echo "built okay"
 	exit 0
 else 
     echo "!!!FAILED!!! make failed"
-    exit $?
+    exit $result
 fi
