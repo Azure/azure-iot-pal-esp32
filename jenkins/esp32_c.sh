@@ -26,18 +26,20 @@ cp $sample_dir/iothub_client_sample_mqtt.c  $proj_dir
 cp $sample_dir/iothub_client_sample_mqtt.h  $proj_dir
 
 make defconfig
-if [ $? = 0 ]
+result=$?
+if [ $result = 0 ]
     then echo "config generated okay"
 else 
     echo "!!!FAILED!!! config generation failed"
-    exit $?
+    exit $result
 fi
 
 make
-if [ $? = 0 ]
+result=$?
+if [ $result = 0 ]
     then echo "built okay"
 	exit 0
 else 
     echo "!!!FAILED!!! make failed"
-    exit $?
+    exit $result
 fi
