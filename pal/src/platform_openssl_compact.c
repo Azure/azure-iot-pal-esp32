@@ -4,6 +4,7 @@
 #include "azure_c_shared_utility/platform.h"
 #include "sntp.h"
 #include "tlsio_pal.h"
+#include "azure_c_shared_utility/xlogging.h"
 
 static const char* const ntpServer = "pool.ntp.org";
 
@@ -12,12 +13,24 @@ static const char* const ntpServer = "pool.ntp.org";
 int platform_init(void)
 {
 	// SNTP_SetServerName logs any necessary errors
-	int result = SNTP_SetServerName(ntpServer);
-	if (result == 0)
+	int result;
+    if (SNTP_SetServerName(ntpServer) != 0)
+    {
+        LogError("Failed SNTP_SetServerName");
+        result = __FAILURE__;
+    }
+    else
+    {
+    }
+	if (SNTP_Init() != 0)
 	{
-		// SNTP_Init will have logged its own errors if necessary
-		result = SNTP_Init();
+        LogError("Failed SNTP_Init");
+        result = __FAILURE__;
 	}
+    else
+    {
+        result = 0;
+    }
     return result;
 }
 
