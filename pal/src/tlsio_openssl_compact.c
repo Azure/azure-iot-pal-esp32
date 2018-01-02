@@ -821,7 +821,7 @@ static int tlsio_openssl_setoption(CONCRETE_IO_HANDLE tls_io, const char* option
     {
         /* Codes_SRS_TLSIO_30_121: [ If the optionName parameter is NULL, tlsio_openssl_compact_setoption shall do nothing except log an error and return FAILURE. ]*/
         /* Codes_SRS_TLSIO_30_122: [ If the value parameter is NULL, tlsio_openssl_compact_setoption shall do nothing except log an error and return FAILURE. ]*/
-        /* Codes_SRS_TLSIO_OPENSSL_COMPACT_30_520 [ The tlsio_setoption shall do nothing and return 0. ]*/
+        /* Codes_SRS_TLSIO_OPENSSL_COMPACT_30_520 [ The tlsio_setoption shall do nothing and return FAILURE. ]*/
         TLSIO_OPTIONS_RESULT options_result = tlsio_options_set(&tls_io_instance->options, optionName, value);
         if (options_result != TLSIO_OPTIONS_RESULT_SUCCESS)
         {
@@ -836,7 +836,7 @@ static int tlsio_openssl_setoption(CONCRETE_IO_HANDLE tls_io, const char* option
     return result;
 }
 
-/* Codes_SRS_TLSIO_OPENSSL_COMPACT_30_560: [ The  tlsio_retrieveoptions  shall do nothing and return NULL. ]*/
+/* Codes_SRS_TLSIO_OPENSSL_COMPACT_30_560: [ The  tlsio_retrieveoptions  shall do nothing and return an empty options handler. ]*/
 static OPTIONHANDLER_HANDLE tlsio_openssl_retrieveoptions(CONCRETE_IO_HANDLE tls_io)
 {
     TLS_IO_INSTANCE* tls_io_instance = (TLS_IO_INSTANCE*)tls_io;
