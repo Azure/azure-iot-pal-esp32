@@ -649,7 +649,9 @@ static void dowork_poll_open_ssl(TLS_IO_INSTANCE* tls_io_instance)
     // but by experiment, 0 is the success result, at least when using
     // SSL_set_fd instead of custom BIO.
     // https://www.openssl.org/docs/man1.0.2/ssl/SSL_connect.html
-    if (connect_result == 1 || connect_result == 0)
+    // Update: Later versions of the Espressif SDK seem to adhere to the
+    // documentation.
+    if (connect_result == 1)
     {
         /* Codes_SRS_TLSIO_30_080: [ The tlsio_dowork shall establish a TLS connection using the hostName and port provided during tlsio_open. ]*/
         // Connect succeeded

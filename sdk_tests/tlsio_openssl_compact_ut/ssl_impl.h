@@ -16,7 +16,7 @@
 #define SSL_Good_Ptr (void*)22
 #define SSL_Good_Context_Ptr (SSL_CTX*)33
 #define SSL_Good_Socket 44
-#define SSL_CONNECT_SUCCESS 0
+#define SSL_CONNECT_SUCCESS 1
 #define SSL_SET_FD_SUCCESS 1
 #define SSL_SET_FD_FAILURE 0
 #define SSL_READ_NO_DATA 0
