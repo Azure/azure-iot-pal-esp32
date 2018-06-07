@@ -1,5 +1,35 @@
+# WARNING: THIS REPO IS GOING TO BE RETIRED ON JULY 1ST, 2018. 
+BUT DON’T WORRY!  Espressif has taken ownership of this port for the Azure IoT.
+Please start using the code from the following repo:  
+•	https://github.com/espressif/esp32-azure
 
-# Get Started with Microsoft Azure IoT Starter Kit - ESP32-DevKitC ("Core Board")
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+## Get Started with Microsoft Azure IoT Starter Kit - ESP32-DevKitC ("Core Board")
 
 This sample was tested with Espressif's **ESP32-DevKitC ("Core Board")**, but many other kits would work as well.
 
