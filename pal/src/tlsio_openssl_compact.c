@@ -458,7 +458,9 @@ static void dowork_read(TLS_IO_INSTANCE* tls_io_instance)
         //
         // Pump all of the bytes currently available out
         rcv_bytes = SSL_read(tls_io_instance->ssl, buffer, sizeof(buffer));
-        while (rcv_bytes > 0)
+        // After 100 SSL_read calls, break this while loop to avoid an infinite condition. 
+        int idx = 0; 
+        while (rcv_bytes > 0 && idx++ < 100)
         {
             // tls_io_instance->on_bytes_received was already checked for NULL
             // in the call to tlsio_openssl_open_async
